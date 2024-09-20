@@ -157,7 +157,8 @@ public class ConfirmFragment extends Fragment {
                                 paymentReceiptFragment.setArguments(bundle1);
                                 fragmentController.replaceFragment(paymentReceiptFragment, null);
                                 Toast.makeText(getActivity(), "Venda registrada com sucesso no Portal.", Toast.LENGTH_SHORT).show();
-                                Log.d("API_RESPONSE", "onResponse: " + registerResponse.getMessage());
+                                //assert registerResponse != null;
+                                //Log.d("API_RESPONSE", "onResponse: " + registerResponse.getMessage());
 
                             }
                             @Override

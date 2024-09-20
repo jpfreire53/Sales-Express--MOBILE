@@ -1,13 +1,17 @@
 package com.example.salesexpress.views.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.salesexpress.R;
 import com.example.salesexpress.databinding.ActivityMainBinding;
@@ -21,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     MyDatabaseHelper myDB;
+
+    private static final int CAMERA_REQUEST_CODE = 100;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -38,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         screenView.setSystemUiVisibility(uiOptions);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+        }
 
         binding.mainLayout.setOnTouchListener((view, motionEvent) -> {
             hideKeyboard(view);
