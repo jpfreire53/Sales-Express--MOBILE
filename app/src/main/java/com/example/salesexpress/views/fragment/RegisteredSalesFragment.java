@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,6 +25,8 @@ import com.example.salesexpress.model.SalesModel;
 import com.example.salesexpress.services.CpfTextWatcher;
 import com.example.salesexpress.services.FragmentController;
 import com.example.salesexpress.services.MoneyTextWatcher;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -198,6 +201,11 @@ public class RegisteredSalesFragment extends Fragment {
             }
         });
 
+        binding.btnPlus.setOnLongClickListener(v -> {
+            launchQRCodeScanner();
+            return true;
+        });
+
         binding.btnMinus.setOnClickListener(j -> {
             int existingPosition = dynamicViews.size();
             if (existingPosition > 0) {
@@ -301,4 +309,24 @@ public class RegisteredSalesFragment extends Fragment {
         }
         return isEmpty;
     }
+
+    private final ActivityResultLauncher<ScanOptions> qrCodeScannerLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() != null) {
+
+                }
+            });
+
+    private void launchQRCodeScanner() {
+        ScanOptions options = new ScanOptions();
+        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE); // Define que queremos ler apenas QR Code
+        options.setPrompt("Escaneie o QR Code");
+        options.setBeepEnabled(true);
+        options.setCameraId(1); // 0 para usar a câmera traseira
+        options.setOrientationLocked(false);
+
+        qrCodeScannerLauncher.launch(options);
+    }
+
 }
