@@ -37,14 +37,18 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 + "cpf TEXT,"
                 + "email TEXT,"
                 + "value DECIMAL(10,2),"
-                + "moneyChange DECIMAL(10,2)" + ")";;
+                + "moneyChange DECIMAL(10,2), "
+                + "users_id INTEGER NOT NULL, "
+                + "FOREIGN KEY(users_id) REFERENCES users(id)" + ")";;
         sqLiteDatabase.execSQL(query);
 
         String items = "CREATE TABLE IF NOT EXISTS items ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "description TEXT,"
                 + "sales_id INTEGER,"
-                + "FOREIGN KEY (sales_id) REFERENCES reprocessed_sales(id)"
+                + "products_id INTEGER NOT NULL,"
+                + "FOREIGN KEY (sales_id) REFERENCES reprocessed_sales(id),"
+                + "FOREIGN KEY(products_id) REFERENCES products(id)"
                 + ")";
         sqLiteDatabase.execSQL(items);
 
@@ -67,6 +71,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         cv.put("cpf", salesModel.getCpf());
         cv.put("value", salesModel.getValue());
         cv.put("moneyChange", salesModel.getMoneyChange());
+        cv.put("users_id", salesModel.getUsers_id());
         long result = db.insert("reprocessed_sales", null, cv);
         if (result == -1) {
             return false;
@@ -102,6 +107,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             int emailIndex = cursor.getColumnIndex("email");
             int valueIndex = cursor.getColumnIndex("value");
             int moneyChangeIndex = cursor.getColumnIndex("moneyChange");
+            int userIdIndex = cursor.getColumnIndex("users_id");
 
             String id = idIndex != -1 ? cursor.getString(idIndex) : "";
             String name = nameIndex != -1 ? cursor.getString(nameIndex) : "";
@@ -109,8 +115,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             String email = emailIndex != -1 ? cursor.getString(emailIndex) : "";
             double value = valueIndex != -1 ? cursor.getDouble(valueIndex) : 0.0;
             double moneyChange = moneyChangeIndex != -1 ? cursor.getDouble(moneyChangeIndex) : 0.0;
+            String userId = moneyChangeIndex != -1 ? cursor.getString(userIdIndex) : "";
 
-            lastSale = new SalesModel(id, name, cpf, email, value, moneyChange);
+            lastSale = new SalesModel(id, name, cpf, email, value, moneyChange, userId);
         }
 
         cursor.close();
@@ -127,12 +134,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 int idIndex = cursor.getColumnIndex("id");
                 int descriptionIndex = cursor.getColumnIndex("description");
                 int salesIdIndex = cursor.getColumnIndex("sales_id");
+                int productIdIndex = cursor.getColumnIndex("products_id");
 
                 String id = cursor.getString(idIndex);
                 String description = cursor.getString(descriptionIndex);
                 String saleId = cursor.getString(salesIdIndex);
+                String productId = cursor.getString(productIdIndex);
 
-                ItemModel lastItem = new ItemModel(id, description, saleId);
+                ItemModel lastItem = new ItemModel(id, description, saleId, productId);
                 lastItems.add(lastItem);
             }
 
@@ -201,15 +210,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                     int emailIndex = cursor.getColumnIndex("email");
                     int valueIndex = cursor.getColumnIndex("value");
                     int moneyChangeIndex = cursor.getColumnIndex("moneyChange");
+                    int userIdIndex = cursor.getColumnIndex("users_id");
 
                     String id = cursor.getString(idIndex);
                     String name = cursor.getString(nameIndex);
                     String cpf = cursor.getString(cpfIndex);
                     String email = cursor.getString(emailIndex);
+                    String userId = cursor.getString(userIdIndex);
                     double value = Double.parseDouble(cursor.getString(valueIndex));
                     double moneyChange = Double.parseDouble(cursor.getString(moneyChangeIndex));
 
-                    SalesModel salesModel = new SalesModel(id, name, cpf, email, value, moneyChange);
+                    SalesModel salesModel = new SalesModel(id, name, cpf, email, value, moneyChange, userId);
                     salesList.add(salesModel);
                 }
         } catch (Exception e){
