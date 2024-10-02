@@ -20,16 +20,13 @@ public class SharedPreferencesHelper {
         editor = sharedPreferences.edit();
     }
 
-    public void salvarUsuario(String user, String password) {
+    public void salvarUsuario(String user, String password, int id) {
         editor.putString(KEY_USER, user);
         editor.putString(KEY_PASSWORD, password);
+        editor.putInt(KEY_ID, id);
         editor.apply();
     }
 
-    public void salvarId(String id) {
-        editor.putString(KEY_ID, id);
-        editor.apply();
-    }
 
     public void salvarIsPaid(boolean isPaid){
         editor.putBoolean(KEY_PAID, isPaid);

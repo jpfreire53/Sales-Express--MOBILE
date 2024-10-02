@@ -64,10 +64,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 Log.d("LoginActivity", "onResponse: " + response.code());
                 if (response.isSuccessful()) {
-                    sharedPreferencesHelper.salvarUsuario(userModel.getUser(), userModel.getPassword());
-                    Toast.makeText(LoginActivity.this, "Login realizado com sucesso", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    startActivity(intent);
+                    LoginResponse loginResponse = response.body();
+                    if(loginResponse != null && loginResponse.getUser() != null) {
+                        int userId = loginResponse.getUser().getId();
+                        sharedPreferencesHelper.salvarUsuario(userModel.getUser(), userModel.getPassword(), userId);
+                        Toast.makeText(LoginActivity.this, "Login realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        startActivity(intent);
+                    }
                 } else {
                     Toast.makeText(LoginActivity.this, "Usuário ou senha inválidos!", Toast.LENGTH_SHORT).show();
                 }

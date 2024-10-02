@@ -152,7 +152,7 @@ public class RegisteredSalesFragment extends Fragment {
                         }
                     }
 
-                    salesModel = new SalesModel("", name, cpf, email, valueDouble, finaltotal);
+                    salesModel = new SalesModel("", name, cpf, email, valueDouble, finaltotal, "1");
                     bundle.putSerializable("saleModel", salesModel);
                     if (dynamicViews.size() > 0) {
                         Log.i("dynamicViews", "onViewCreated: SIZE: " + dynamicViews.size());
@@ -163,7 +163,7 @@ public class RegisteredSalesFragment extends Fragment {
                             EditText newEditText = dynamicView.findViewById(R.id.newEditText);
                             String newItemText = newEditText.getText().toString();
                             if (!newItemText.equals("")) {
-                                ItemModel newItemModel = new ItemModel("", newItemText, salesModel.getId());
+                                ItemModel newItemModel = new ItemModel("", newItemText, salesModel.getId(), "1");
                                 Log.i("dynamicViews", "onViewCreated: SIZE: " + dynamicViews.size());
                                 for (int j = 0; j < itemModels.size(); j++) {
                                     if (itemModels.get(j).description.equals(newItemText)) {
