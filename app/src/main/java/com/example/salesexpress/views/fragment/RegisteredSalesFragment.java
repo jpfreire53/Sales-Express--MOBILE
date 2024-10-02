@@ -28,6 +28,8 @@ import com.example.salesexpress.services.MoneyTextWatcher;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +42,7 @@ public class RegisteredSalesFragment extends Fragment {
     private final List<View> dynamicViews = new ArrayList<>();
     SalesModel salesModel;
     private final List<ItemModel> itemModels = new ArrayList<>();
+    private EditText currentEditText;
 
     public RegisteredSalesFragment() {}
     @Override
@@ -107,6 +110,7 @@ public class RegisteredSalesFragment extends Fragment {
         binding.edtMoneyChangeC.addTextChangedListener(new MoneyTextWatcher(binding.edtMoneyChangeC));
         ConfirmFragment confirmFragment = new ConfirmFragment();
         Bundle bundle = new Bundle();
+
 
         if (itemModels.size() > 0) {
             itemModels.clear();
@@ -202,7 +206,7 @@ public class RegisteredSalesFragment extends Fragment {
         });
 
         binding.btnPlus.setOnLongClickListener(v -> {
-            launchQRCodeScanner();
+            launchQRCodeScanner(binding.newEditText);
             return true;
         });
 
@@ -236,6 +240,11 @@ public class RegisteredSalesFragment extends Fragment {
 
         int existingPosition = container.getChildCount();
         EditText newEditText = dynamicView.findViewById(R.id.newEditText);
+
+        btnAdd.setOnLongClickListener(v -> {
+            launchQRCodeScanner(newEditText);
+            return true;
+        });
 
         container.addView(dynamicView, container.getChildCount());
         dynamicViews.add(dynamicView);
@@ -314,19 +323,40 @@ public class RegisteredSalesFragment extends Fragment {
             new ScanContract(),
             result -> {
                 if (result.getContents() != null) {
+                    try {
+                        // Converte o conteúdo do QR code para um objeto JSON
+                        JSONObject jsonObject = new JSONObject(result.getContents());
 
+                        // Extrai o campo "product" do JSON
+                        String product = jsonObject.optString("user", "");
+
+                        // Coloca o valor do produto no currentEditText
+                        if (currentEditText != null && !product.isEmpty()) {
+                            currentEditText.setText(product);
+                        } else {
+                            Toast.makeText(getContext(), "QR Code não contém dados válidos.", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Erro ao ler QR Code: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("QRCodeError", "Erro ao processar JSON: " + e.getMessage());
+                    }
                 }
             });
 
-    private void launchQRCodeScanner() {
+
+
+    private void launchQRCodeScanner(EditText newEditText) {
+        currentEditText = newEditText; // Armazena o EditText atual
+
         ScanOptions options = new ScanOptions();
-        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE); // Define que queremos ler apenas QR Code
+        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
         options.setPrompt("Escaneie o QR Code");
         options.setBeepEnabled(true);
-        options.setCameraId(1); // 0 para usar a câmera traseira
-        options.setOrientationLocked(false);
+        options.setCameraId(0); // 0 para usar a câmera traseira
+        options.setOrientationLocked(true);
 
-        qrCodeScannerLauncher.launch(options);
+        qrCodeScannerLauncher.launch(options); // Apenas chama o launcher
     }
+
 
 }
