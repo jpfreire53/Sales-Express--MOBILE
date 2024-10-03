@@ -42,6 +42,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY(users_id) REFERENCES users(id)" + ")";;
         sqLiteDatabase.execSQL(query);
 
+        String products = "CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, description TEXT, sku TEXT)";
+        sqLiteDatabase.execSQL(products);
+
         String items = "CREATE TABLE IF NOT EXISTS items ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "description TEXT,"
@@ -51,7 +54,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY(products_id) REFERENCES products(id)"
                 + ")";
         sqLiteDatabase.execSQL(items);
-
     }
 
     @Override

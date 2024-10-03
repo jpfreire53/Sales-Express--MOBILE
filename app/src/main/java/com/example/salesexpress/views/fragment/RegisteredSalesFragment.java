@@ -328,7 +328,7 @@ public class RegisteredSalesFragment extends Fragment {
                         JSONObject jsonObject = new JSONObject(result.getContents());
 
                         // Extrai o campo "product" do JSON
-                        String product = jsonObject.optString("user", "");
+                        String product = jsonObject.optString("produto", "");
 
                         // Coloca o valor do produto no currentEditText
                         if (currentEditText != null && !product.isEmpty()) {
