@@ -87,6 +87,8 @@
             fragmentController.replaceFragment(registeredSalesFragment, null);
         });
 
+<<<<<<< HEAD
+=======
         binding.btnYes.setOnClickListener(j -> {
             try {
                 enviarEmail(sale);
@@ -95,6 +97,7 @@
             }
         });
 
+>>>>>>> 5045389087d8de6242c2277a24c4797b86a4ebe1
      }
 
      public void enviarEmail(SalesModel salesModel) {
