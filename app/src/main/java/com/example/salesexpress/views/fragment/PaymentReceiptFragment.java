@@ -87,14 +87,6 @@
             fragmentController.replaceFragment(registeredSalesFragment, null);
         });
 
-        binding.btnYes.setOnClickListener(j -> {
-            try {
-                enviarEmail(sale);
-            } catch (Exception e) {
-                Log.i("erroEmail", "" + e.getMessage());
-            }
-        });
-
      }
 
      public void enviarEmail(SalesModel salesModel) {
