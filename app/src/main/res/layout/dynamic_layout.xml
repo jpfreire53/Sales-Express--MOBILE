@@ -1,0 +1,51 @@
+<!-- dynamic_layout.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="5">
+
+    <EditText
+        android:id="@+id/newEditText"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="14dp"
+        android:layout_weight="1"
+        android:textColor="@color/azulEscuro"
+        android:background="@drawable/bg_field_inpt"
+        android:fontFamily="@font/montserrat_regular"
+        android:inputType="text"
+        android:maxLength="25"
+        android:padding="10dp"
+        android:textSize="14sp" />
+
+    <ImageButton
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_weight="4"
+        android:background="@drawable/bg_field_button"
+        android:scaleType="center"
+        android:src="@drawable/iconplus_resized" />
+
+    <ImageButton
+        android:id="@+id/btnMinus"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_weight="4"
+        android:background="@drawable/bg_field_button_blue"
+        android:src="@drawable/baseline_close"
+        android:visibility="gone" />
+
+</LinearLayout>
