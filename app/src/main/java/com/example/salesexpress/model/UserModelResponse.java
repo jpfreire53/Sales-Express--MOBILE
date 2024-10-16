@@ -22,6 +22,8 @@ public class UserModelResponse {
         this.role = role;
     }
 
+    public UserModelResponse(){}
+
     // Getters
     public int getId() {
         return id;

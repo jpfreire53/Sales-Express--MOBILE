@@ -1,5 +1,6 @@
 package com.example.salesexpress.utils;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.salesexpress.model.ItemModel;
+import com.example.salesexpress.model.ProductModel;
 import com.example.salesexpress.model.SalesModel;
+import com.example.salesexpress.model.UserModelResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY(users_id) REFERENCES users(id)" + ")";;
         sqLiteDatabase.execSQL(query);
 
-        String products = "CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, description TEXT, sku TEXT)";
+        String products = "CREATE TABLE IF NOT EXISTS products ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "name TEXT NOT NULL,"
+                + "description TEXT,"
+                + "sku TEXT UNIQUE"
+                + ")";
         sqLiteDatabase.execSQL(products);
 
         String items = "CREATE TABLE IF NOT EXISTS items ("
@@ -54,6 +62,18 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY(products_id) REFERENCES products(id)"
                 + ")";
         sqLiteDatabase.execSQL(items);
+
+        String user = "CREATE TABLE IF NOT EXISTS user   ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "user TEXT,"
+                + "name TEXT,"
+                + "company TEXT,"
+                + "cnpj TEXT,"
+                + "password TEXT,"
+                + "userType TEXT,"
+                + "role TEXT"
+                + ")";
+        sqLiteDatabase.execSQL(user);
     }
 
     @Override
@@ -63,10 +83,111 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+    @SuppressLint("Range")
+    public UserModelResponse getUserByCredentials(String username, String password) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM user WHERE user = ? AND password = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[] {username, password});
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            UserModelResponse user = new UserModelResponse();
+            user.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            user.setUser(cursor.getString(cursor.getColumnIndex("user")));
+            user.setName(cursor.getString(cursor.getColumnIndex("name")));
+            user.setCompany(cursor.getString(cursor.getColumnIndex("company")));
+            user.setCnpj(cursor.getString(cursor.getColumnIndex("cnpj")));
+            user.setPassword(cursor.getString(cursor.getColumnIndex("password")));
+            user.setUserType(cursor.getString(cursor.getColumnIndex("userType")));
+            user.setRole(cursor.getString(cursor.getColumnIndex("role")));
+
+            cursor.close();
+            return user;
+        }
+
+        return null;
+    }
+
+    public UserModelResponse getUserById(int id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM user WHERE id = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+
+            UserModelResponse user = new UserModelResponse();
+            user.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            user.setUser(cursor.getString(cursor.getColumnIndexOrThrow("user")));
+            user.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            user.setCompany(cursor.getString(cursor.getColumnIndexOrThrow("company")));
+            user.setCnpj(cursor.getString(cursor.getColumnIndexOrThrow("cnpj")));
+            user.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("password")));
+            user.setUserType(cursor.getString(cursor.getColumnIndexOrThrow("userType")));
+            user.setRole(cursor.getString(cursor.getColumnIndexOrThrow("role")));
+            cursor.close();
+            return user;
+        }
+
+        return null;
+    }
+
+    public long createUser(String username, String name, String company, String cnpj, String password, String userType, String role) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put("user", username);
+        values.put("name", name);
+        values.put("company", company);
+        values.put("cnpj", cnpj);
+        values.put("password", password);
+        values.put("userType", userType);
+        values.put("role", role);
+
+        long result = db.insert("user", null, values);
+
+        return result;
+    }
+
+    public List<UserModelResponse> getAllUsers() {
+        List<UserModelResponse> userList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM user";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                UserModelResponse user = new UserModelResponse();
+                user.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                user.setUser(cursor.getString(cursor.getColumnIndexOrThrow("user")));
+                user.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+                user.setCompany(cursor.getString(cursor.getColumnIndexOrThrow("company")));
+                user.setCnpj(cursor.getString(cursor.getColumnIndexOrThrow("cnpj")));
+                user.setPassword(cursor.getString(cursor.getColumnIndexOrThrow("password")));
+                user.setUserType(cursor.getString(cursor.getColumnIndexOrThrow("userType")));
+                user.setRole(cursor.getString(cursor.getColumnIndexOrThrow("role")));
+
+                userList.add(user);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return userList;
+    }
+
+
     public boolean insertSale(SalesModel salesModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-
 
         cv.put("name", salesModel.getName());
         cv.put("email", salesModel.getEmail());
@@ -132,20 +253,20 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, new String[]{salesId});
 
         ArrayList<ItemModel> lastItems = new ArrayList<>();
-             while (cursor.moveToNext()) {
-                int idIndex = cursor.getColumnIndex("id");
-                int descriptionIndex = cursor.getColumnIndex("description");
-                int salesIdIndex = cursor.getColumnIndex("sales_id");
-                int productIdIndex = cursor.getColumnIndex("products_id");
+        while (cursor.moveToNext()) {
+            int idIndex = cursor.getColumnIndex("id");
+            int descriptionIndex = cursor.getColumnIndex("description");
+            int salesIdIndex = cursor.getColumnIndex("sales_id");
+            int productIdIndex = cursor.getColumnIndex("products_id");
 
-                String id = cursor.getString(idIndex);
-                String description = cursor.getString(descriptionIndex);
-                String saleId = cursor.getString(salesIdIndex);
-                String productId = cursor.getString(productIdIndex);
+            String id = cursor.getString(idIndex);
+            String description = cursor.getString(descriptionIndex);
+            String saleId = cursor.getString(salesIdIndex);
+            String productId = cursor.getString(productIdIndex);
 
-                ItemModel lastItem = new ItemModel(id, description, saleId, productId);
-                lastItems.add(lastItem);
-            }
+            ItemModel lastItem = new ItemModel(id, description, saleId, productId);
+            lastItems.add(lastItem);
+        }
 
 
         cursor.close();
@@ -206,29 +327,133 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         try {
             while (cursor.moveToNext()) {
-                    int idIndex = cursor.getColumnIndex("id");
-                    int nameIndex = cursor.getColumnIndex("name");
-                    int cpfIndex = cursor.getColumnIndex("cpf");
-                    int emailIndex = cursor.getColumnIndex("email");
-                    int valueIndex = cursor.getColumnIndex("value");
-                    int moneyChangeIndex = cursor.getColumnIndex("moneyChange");
-                    int userIdIndex = cursor.getColumnIndex("users_id");
+                int idIndex = cursor.getColumnIndex("id");
+                int nameIndex = cursor.getColumnIndex("name");
+                int cpfIndex = cursor.getColumnIndex("cpf");
+                int emailIndex = cursor.getColumnIndex("email");
+                int valueIndex = cursor.getColumnIndex("value");
+                int moneyChangeIndex = cursor.getColumnIndex("moneyChange");
+                int userIdIndex = cursor.getColumnIndex("users_id");
 
-                    String id = cursor.getString(idIndex);
-                    String name = cursor.getString(nameIndex);
-                    String cpf = cursor.getString(cpfIndex);
-                    String email = cursor.getString(emailIndex);
-                    String userId = cursor.getString(userIdIndex);
-                    double value = Double.parseDouble(cursor.getString(valueIndex));
-                    double moneyChange = Double.parseDouble(cursor.getString(moneyChangeIndex));
+                String id = cursor.getString(idIndex);
+                String name = cursor.getString(nameIndex);
+                String cpf = cursor.getString(cpfIndex);
+                String email = cursor.getString(emailIndex);
+                String userId = cursor.getString(userIdIndex);
+                double value = Double.parseDouble(cursor.getString(valueIndex));
+                double moneyChange = Double.parseDouble(cursor.getString(moneyChangeIndex));
 
-                    SalesModel salesModel = new SalesModel(id, name, cpf, email, value, moneyChange, userId);
-                    salesList.add(salesModel);
-                }
+                SalesModel salesModel = new SalesModel(id, name, cpf, email, value, moneyChange, userId);
+                salesList.add(salesModel);
+            }
         } catch (Exception e){
             Toast.makeText(context, ""+ e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return salesList;
+    }
+
+    public long insertProduct(String name, String description, String sku) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("description", description);
+        values.put("sku", sku);
+
+        return db.insert("products", null, values);
+    }
+
+    public List<ProductModel> getAllProducts() {
+        List<ProductModel> productList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM products", null);
+
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    String id = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                    String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                    String sku = cursor.getString(cursor.getColumnIndexOrThrow("sku"));
+
+                    ProductModel product = new ProductModel(id, name, description, sku);
+                    productList.add(product);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
+        return productList;
+    }
+
+    public boolean deleteProduct(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("products", "id = ?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+    public List<ProductModel> getProductByName(String name) {
+        List<ProductModel> productList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM products WHERE name LIKE ?";
+        Cursor cursor = db.rawQuery(query, new String[]{"%" + name + "%"});
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+                String productName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                String sku = cursor.getString(cursor.getColumnIndexOrThrow("sku"));
+
+                ProductModel product = new ProductModel(id, productName, description, sku);
+                productList.add(product);
+            }
+            cursor.close();
+        }
+
+        return productList;
+    }
+
+    public ProductModel getProductById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM products WHERE id = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            String productId = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            String sku = cursor.getString(cursor.getColumnIndexOrThrow("sku"));
+
+            cursor.close();
+            return new ProductModel(productId, name, description, sku);
+        }
+
+        return null;
+    }
+
+    public boolean updateProductById(int id, String name, String description, String sku) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("description", description);
+        values.put("sku", sku);
+
+        int rowsAffected = db.update("products", values, "id = ?", new String[]{String.valueOf(id)});
+
+        return rowsAffected > 0;
+    }
+
+    public boolean updateProduct(ProductModel product) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", product.getName());
+        values.put("description", product.getDescription());
+        values.put("sku", product.getSku());
+
+        // Atualiza o produto com base no ID
+        int rowsAffected = db.update("products", values, "id = ?", new String[]{String.valueOf(product.getId())});
+
+        return rowsAffected > 0; // Retorna true se o produto foi atualizado com sucesso
     }
 
 }
