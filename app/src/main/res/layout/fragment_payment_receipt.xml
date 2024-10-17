@@ -13,26 +13,16 @@
         android:layout_toStartOf="@+id/view3"
         android:layout_toEndOf="@+id/view2"
         android:fontFamily="@font/montserrat_bold"
-<<<<<<< HEAD
         android:text="Finalizar Venda?"
-=======
-        android:text="ENVIAR COMPROVANTE PARA CLIENTE?"
->>>>>>> 5045389087d8de6242c2277a24c4797b86a4ebe1
         android:textAlignment="center"
         android:textColor="@color/azul"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline98"
         app:layout_constraintEnd_toStartOf="@+id/guideline92"
-<<<<<<< HEAD
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline91"
         app:layout_constraintTop_toTopOf="@+id/guideline97"
         app:layout_constraintVertical_bias="0.0" />
-=======
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/guideline91"
-        app:layout_constraintTop_toTopOf="@+id/guideline97" />
->>>>>>> 5045389087d8de6242c2277a24c4797b86a4ebe1
 
     <View
         android:id="@+id/view2"
@@ -60,10 +50,6 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline87"
         app:layout_constraintTop_toTopOf="@+id/guideline83" />
-
-    <androidx.appcompat.widget.AppCompatButton
-<<<<<<< HEAD
-=======
         android:id="@+id/btnYes"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -80,7 +66,6 @@
         app:layout_constraintTop_toTopOf="@+id/guideline93" />
 
     <androidx.appcompat.widget.AppCompatButton
->>>>>>> 5045389087d8de6242c2277a24c4797b86a4ebe1
         android:id="@+id/btnNo"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -88,20 +73,12 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_field_button_blue"
         android:fontFamily="@font/montserrat_bold"
-<<<<<<< HEAD
         android:text="FINALIZAR"
-=======
-        android:text="NÃO"
->>>>>>> 5045389087d8de6242c2277a24c4797b86a4ebe1
         android:textColor="@color/branca"
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline94"
         app:layout_constraintEnd_toStartOf="@+id/guideline92"
-<<<<<<< HEAD
         app:layout_constraintStart_toStartOf="@+id/guideline91"
-=======
-        app:layout_constraintStart_toStartOf="@+id/guideline96"
->>>>>>> 5045389087d8de6242c2277a24c4797b86a4ebe1
         app:layout_constraintTop_toTopOf="@+id/guideline93" />
 
     <View
