@@ -38,6 +38,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 + "email TEXT,"
                 + "value DECIMAL(10,2),"
                 + "moneyChange DECIMAL(10,2), "
+                + "date TEXT, "
                 + "users_id INTEGER NOT NULL, "
                 + "FOREIGN KEY(users_id) REFERENCES users(id)" + ")";;
         sqLiteDatabase.execSQL(query);
@@ -73,6 +74,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         cv.put("cpf", salesModel.getCpf());
         cv.put("value", salesModel.getValue());
         cv.put("moneyChange", salesModel.getMoneyChange());
+        cv.put("date", salesModel.getDate());
         cv.put("users_id", salesModel.getUsers_id());
         long result = db.insert("reprocessed_sales", null, cv);
         if (result == -1) {
@@ -109,6 +111,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             int emailIndex = cursor.getColumnIndex("email");
             int valueIndex = cursor.getColumnIndex("value");
             int moneyChangeIndex = cursor.getColumnIndex("moneyChange");
+            int dateIndex = cursor.getColumnIndex("date");
             int userIdIndex = cursor.getColumnIndex("users_id");
 
             String id = idIndex != -1 ? cursor.getString(idIndex) : "";
@@ -117,9 +120,10 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             String email = emailIndex != -1 ? cursor.getString(emailIndex) : "";
             double value = valueIndex != -1 ? cursor.getDouble(valueIndex) : 0.0;
             double moneyChange = moneyChangeIndex != -1 ? cursor.getDouble(moneyChangeIndex) : 0.0;
-            String userId = moneyChangeIndex != -1 ? cursor.getString(userIdIndex) : "";
+            String date = dateIndex != -1 ? cursor.getString(dateIndex) : "";
+            String userId = userIdIndex != -1 ? cursor.getString(userIdIndex) : "";
 
-            lastSale = new SalesModel(id, name, cpf, email, value, moneyChange, userId);
+            lastSale = new SalesModel(id, name, cpf, email, value, moneyChange, date, userId);
         }
 
         cursor.close();
@@ -212,6 +216,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                     int emailIndex = cursor.getColumnIndex("email");
                     int valueIndex = cursor.getColumnIndex("value");
                     int moneyChangeIndex = cursor.getColumnIndex("moneyChange");
+                    int dateIndex = cursor.getColumnIndex("date");
                     int userIdIndex = cursor.getColumnIndex("users_id");
 
                     String id = cursor.getString(idIndex);
@@ -219,10 +224,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                     String cpf = cursor.getString(cpfIndex);
                     String email = cursor.getString(emailIndex);
                     String userId = cursor.getString(userIdIndex);
+                    String date = cursor.getString(dateIndex);
                     double value = Double.parseDouble(cursor.getString(valueIndex));
                     double moneyChange = Double.parseDouble(cursor.getString(moneyChangeIndex));
 
-                    SalesModel salesModel = new SalesModel(id, name, cpf, email, value, moneyChange, userId);
+                    SalesModel salesModel = new SalesModel(id, name, cpf, email, value, moneyChange, date, userId);
                     salesList.add(salesModel);
                 }
         } catch (Exception e){
