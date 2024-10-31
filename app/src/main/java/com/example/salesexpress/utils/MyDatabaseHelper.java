@@ -286,6 +286,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
             cv.put("description", itemModel.getDescription());
             cv.put("sales_id", salesModel.getId());
+            cv.put("products_id", itemModel.getProducts_id());
             long result = db.insert("items", null, cv);
 
             if (result == -1) {
