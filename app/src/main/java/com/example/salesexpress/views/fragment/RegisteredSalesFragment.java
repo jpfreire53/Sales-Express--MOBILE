@@ -123,13 +123,14 @@ public class RegisteredSalesFragment extends Fragment {
                 String email = binding.edtEmailC.getText().toString();
                 String value = binding.edtValueC.getText().toString(); //valor venda
                 String moneyChange = binding.edtMoneyChangeC.getText().toString();  //valor recebido
+                String date = binding.edtDate.getText().toString();
                 String isCredit = binding.isCredit.getSelectedItem().toString();
                 String spnrParcel = binding.spnrParcel.getSelectedItem().toString();
 
                 value = value.replaceAll("\\D", "");
                 moneyChange = moneyChange.replaceAll("\\D", "");
 
-                if (name.equals("") || cpf.equals("") || email.equals("") || value.equals("") || dynamicViews.size() == 0 || verifyEditText()) {
+                if (name.equals("") || cpf.equals("") || email.equals("") || value.equals("") || dynamicViews.size() == 0 || verifyEditText() || date.equals("")) {
                     Toast.makeText(getActivity(), "Preecha os campos para inserir a venda.", Toast.LENGTH_SHORT).show();
                 } else if (!email.contains("@") || email.lastIndexOf(".") <= email.lastIndexOf("@")) {
                     Toast.makeText(getActivity(), "E-mail digitado de maneira incorreta.", Toast.LENGTH_SHORT).show();
@@ -137,6 +138,8 @@ public class RegisteredSalesFragment extends Fragment {
                     Toast.makeText(getActivity(), "CPF digitado de maneira incorreta.", Toast.LENGTH_SHORT).show();
                 } else if (moneyChange.equals("")) {
                     binding.edtMoneyChangeC.setText("0");
+                } else if (date.length() < 10) {
+                    Toast.makeText(getActivity(), "Preencha a data de maneira correta.", Toast.LENGTH_SHORT).show();
                 } else {
                     double valueDouble = Double.parseDouble(value);
                     double moneyChangeDouble = Double.parseDouble(moneyChange);
@@ -152,7 +155,7 @@ public class RegisteredSalesFragment extends Fragment {
                         }
                     }
 
-                    salesModel = new SalesModel("", name, cpf, email, valueDouble, finaltotal, "1");
+                    salesModel = new SalesModel("", name, cpf, email, valueDouble, finaltotal, date, "1");
                     bundle.putSerializable("saleModel", salesModel);
                     if (dynamicViews.size() > 0) {
                         Log.i("dynamicViews", "onViewCreated: SIZE: " + dynamicViews.size());
