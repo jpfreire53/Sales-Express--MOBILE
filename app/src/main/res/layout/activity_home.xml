@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bgCinza"
-    android:rotationY="-144"
     tools:context=".views.activity.HomeActivity">
 
     <!-- Menu Button -->

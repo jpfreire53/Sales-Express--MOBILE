@@ -4,4 +4,5 @@
     <color name="azul">#778DA9</color>
     <color name="branca">#FFFFFF</color>
     <color name="bgCinza">#E0E1DD</color>
+    <color name="semiTransparentBlack">#80000000</color>
 </resources>

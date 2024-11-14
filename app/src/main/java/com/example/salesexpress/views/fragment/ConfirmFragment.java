@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,6 +64,12 @@ public class ConfirmFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Inicializando o ProgressBar e o Overlay
+        ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        View overlay = view.findViewById(R.id.overlay);  // Adicionando referência ao overlay
+
+        // Configuração dos demais componentes
         myDB = new MyDatabaseHelper(getActivity());
         recyclerView = view.findViewById(R.id.recycler_view);
         SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(getActivity());
@@ -75,113 +82,71 @@ public class ConfirmFragment extends Fragment {
         PaymentReceiptFragment paymentReceiptFragment = new PaymentReceiptFragment();
         FragmentManager fragmentManager = getParentFragmentManager();
 
+        // Configuração da RecyclerView e Exibição de Dados
         if (sale != null) {
             binding.edtEmail.setText(sale.getEmail());
             binding.edtName.setText(sale.getName());
             binding.edtCpf.setText(sale.getCpf());
 
             double totalAmount = Double.parseDouble(String.valueOf(sale.getMoneyChange())) + Double.parseDouble(String.valueOf(sale.getValue()));
-            String formattedTotalAmount = MoneyTextWatcher.formatCurrencyFromString(Double.parseDouble(String.valueOf(totalAmount)));
+            String formattedTotalAmount = MoneyTextWatcher.formatCurrencyFromString(totalAmount);
             binding.edtValue.setText(formattedTotalAmount);
 
             binding.edtSale.setText(MoneyTextWatcher.formatCurrencyFromString(sale.getValue()));
-            binding.edtMoneyChange.setText(MoneyTextWatcher.formatCurrencyFromString(sale.getMoneyChange())); //troco
+            binding.edtMoneyChange.setText(MoneyTextWatcher.formatCurrencyFromString(sale.getMoneyChange()));
 
             customAdapter = new CustomAdapter(getActivity(), getActivity(), items);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(customAdapter);
         }
 
-        binding.btnIrParaAlterar.setOnClickListener(v -> {
-            try {
-                fragmentController.popBackStack();
-                if (items.size() > 0){
-                    items.clear();
-                }
-            } catch (Exception e) {
-                Log.i("erroBack", "onViewCreated: " + e.getMessage());
-            }
-        });
-
         binding.btnIrParaFinalizar.setOnClickListener(j -> {
             try {
-                if (bundle != null){
+                if (bundle != null) {
+                    overlay.setVisibility(View.VISIBLE);  // Exibe o overlay
+                    progressBar.setVisibility(View.VISIBLE); // Exibe o ProgressBar
                     String isCredit = bundle.getString("isCredit", "");
-                    if(isCredit.equals("DINHEIRO")){
-                        SalesRequestModel salesRequestModel = new SalesRequestModel(sale, items);
-                        Log.i("items", "registrarVenda: " + salesRequestModel.getItems());
-                        ApiService apiService = RetrofitClient.getRetrofitInstance(getActivity()).create(ApiService.class);
-                        Call<RegisterSalesResponse> call = apiService.registrarVenda(salesRequestModel);
-                        call.enqueue(new Callback<RegisterSalesResponse>() {
-                            @Override
-                            public void onResponse(Call<RegisterSalesResponse> call, Response<RegisterSalesResponse> response) {
-                                    RegisterSalesResponse registerResponse = response.body();
-                                    sale.setSend(true);
-                                    bundle1.putBoolean("isSend", sale.isSend());
-                                    paymentReceiptFragment.setArguments(bundle1);
-                                    bundle1.putSerializable("saleModel", sale);
-                                    bundle1.putSerializable("itemModels", items);
-                                    paymentReceiptFragment.setArguments(bundle1);
-                                    fragmentController.replaceFragment(paymentReceiptFragment, null);
-                                    Toast.makeText(getActivity(), "Venda registrada com sucesso no Portal.", Toast.LENGTH_SHORT).show();
-                                    Log.d("API_RESPONSE", "onResponse: " + registerResponse.getMessage());
+                    SalesRequestModel salesRequestModel = new SalesRequestModel(sale, items);
+                    ApiService apiService = RetrofitClient.getRetrofitInstance(getActivity()).create(ApiService.class);
+                    Call<RegisterSalesResponse> call = apiService.registrarVenda(salesRequestModel);
 
-                            }
-                            @Override
-                            public void onFailure(Call<RegisterSalesResponse> call, Throwable t) {
-                                Log.e("API_RESPONSE", "onFailure: Falha na chamada à API", t);
-                                myDB.insertSale(sale);
-                                myDB.insertItems(items);
-                                bundle1.putSerializable("saleModel", sale);
-                                bundle1.putSerializable("itemModels", items);
-                                paymentReceiptFragment.setArguments(bundle1);
-                                fragmentController.replaceFragment(paymentReceiptFragment, null);
-                                Toast.makeText(getActivity(), "Erro ao enviar a venda para o portal. A venda foi salva para reprocessamento.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        SalesRequestModel salesRequestModel = new SalesRequestModel(sale, items);
-                        Log.i("items", "registrarVenda: " + salesRequestModel.getItems());
-                        ApiService apiService = RetrofitClient.getRetrofitInstance(getActivity()).create(ApiService.class);
-                        Call<RegisterSalesResponse> call = apiService.registrarVenda(salesRequestModel);
-                        call.enqueue(new Callback<RegisterSalesResponse>() {
-                            @Override
-                            public void onResponse(Call<RegisterSalesResponse> call, Response<RegisterSalesResponse> response) {
-                                RegisterSalesResponse registerResponse = response.body();
-                                sale.setSend(true);
-                                bundle1.putBoolean("isSend", sale.isSend());
-                                paymentReceiptFragment.setArguments(bundle1);
-                                bundle1.putSerializable("saleModel", sale);
-                                bundle1.putSerializable("itemModels", items);
-                                paymentReceiptFragment.setArguments(bundle1);
-                                fragmentController.replaceFragment(paymentReceiptFragment, null);
-                                Toast.makeText(getActivity(), "Venda registrada com sucesso no Portal.", Toast.LENGTH_SHORT).show();
-                                //assert registerResponse != null;
-                                //Log.d("API_RESPONSE", "onResponse: " + registerResponse.getMessage());
+                    call.enqueue(new Callback<RegisterSalesResponse>() {
+                        @Override
+                        public void onResponse(Call<RegisterSalesResponse> call, Response<RegisterSalesResponse> response) {
+                            overlay.setVisibility(View.GONE);  // Oculta o overlay
+                            progressBar.setVisibility(View.GONE); // Oculta o ProgressBar
+                            sale.setSend(true);
+                            bundle1.putBoolean("isSend", sale.isSend());
+                            bundle1.putSerializable("saleModel", sale);
+                            bundle1.putSerializable("itemModels", items);
+                            paymentReceiptFragment.setArguments(bundle1);
+                            fragmentController.replaceFragment(paymentReceiptFragment, null);
+                            Toast.makeText(getActivity(), "Venda registrada com sucesso no Portal.", Toast.LENGTH_SHORT).show();
+                        }
 
-                            }
-                            @Override
-                            public void onFailure(Call<RegisterSalesResponse> call, Throwable t) {
-                                Log.e("API_RESPONSE", "onFailure: Falha na chamada à API", t);
-                                myDB.insertSale(sale);
-                                myDB.insertItems(items);
-                                bundle1.putSerializable("saleModel", sale);
-                                bundle1.putSerializable("itemModels", items);
-                                paymentReceiptFragment.setArguments(bundle1);
-                                fragmentController.replaceFragment(paymentReceiptFragment, null);
-                                Toast.makeText(getActivity(), "Erro ao enviar a venda para o portal. A venda foi salva para reprocessamento.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }
+                        @Override
+                        public void onFailure(Call<RegisterSalesResponse> call, Throwable t) {
+                            overlay.setVisibility(View.GONE);  // Oculta o overlay
+                            progressBar.setVisibility(View.GONE); // Oculta o ProgressBar
+                            Log.e("API_RESPONSE", "onFailure: Falha na chamada à API", t);
+                            myDB.insertSale(sale);
+                            myDB.insertItems(items);
+                            bundle1.putSerializable("saleModel", sale);
+                            bundle1.putSerializable("itemModels", items);
+                            paymentReceiptFragment.setArguments(bundle1);
+                            fragmentController.replaceFragment(paymentReceiptFragment, null);
+                            Toast.makeText(getActivity(), "Erro ao enviar a venda para o portal. A venda foi salva para reprocessamento.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), ""+e.getMessage(), Toast.LENGTH_LONG).show();
+                overlay.setVisibility(View.GONE);  // Oculta o overlay em caso de exceção
+                progressBar.setVisibility(View.GONE); // Oculta o ProgressBar
+                Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
     }
+
 
 }
 

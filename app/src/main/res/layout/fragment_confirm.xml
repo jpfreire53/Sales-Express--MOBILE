@@ -39,51 +39,25 @@
         app:layout_constraintStart_toStartOf="@+id/guideline82"
         app:layout_constraintTop_toTopOf="@+id/guideline78" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"
-        android:layout_toStartOf="@+id/textView3"
-        android:background="@color/azul"
-        app:layout_constraintBottom_toTopOf="@+id/guideline71"
-        app:layout_constraintStart_toStartOf="@+id/guideline73"
-        app:layout_constraintTop_toTopOf="@+id/guideline67" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"
-        android:layout_toStartOf="@+id/textView3"
-        android:layout_toEndOf="@+id/textView3"
-        android:background="@color/azul"
-        app:layout_constraintBottom_toTopOf="@+id/guideline71"
-        app:layout_constraintEnd_toStartOf="@+id/guideline72"
-        app:layout_constraintTop_toTopOf="@+id/guideline67" />
-
     <TextView
         android:id="@+id/textView3"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_bold"
-        android:text="RESUMO VENDA"
+        android:text="CONFIRMAR VENDA"
         android:textAlignment="center"
-        android:textColor="@color/azul"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline71"
-        app:layout_constraintEnd_toStartOf="@+id/guideline70"
-        app:layout_constraintStart_toStartOf="@+id/guideline69"
-        app:layout_constraintTop_toTopOf="@+id/guideline67" />
-
+        android:textColor="@color/branca"
+        android:textSize="18sp"
+        android:background="@color/azul"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         android:background="@color/branca"
         app:layout_constraintBottom_toTopOf="@+id/guideline77"
         app:layout_constraintEnd_toStartOf="@+id/guideline76"
@@ -326,9 +300,28 @@
                 app:layout_constraintStart_toEndOf="@+id/textView11"
                 app:layout_constraintTop_toBottomOf="@+id/view5" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/semiTransparentBlack"
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline67"
@@ -440,5 +433,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.48" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
