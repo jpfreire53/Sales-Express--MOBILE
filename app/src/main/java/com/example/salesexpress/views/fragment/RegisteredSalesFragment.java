@@ -23,6 +23,7 @@ import com.example.salesexpress.databinding.FragmentRegisteredSalesBinding;
 import com.example.salesexpress.model.ItemModel;
 import com.example.salesexpress.model.SalesModel;
 import com.example.salesexpress.services.CpfTextWatcher;
+import com.example.salesexpress.services.DateTextWatcher;
 import com.example.salesexpress.services.FragmentController;
 import com.example.salesexpress.services.MoneyTextWatcher;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -108,6 +109,7 @@ public class RegisteredSalesFragment extends Fragment {
         binding.edtCPF.addTextChangedListener(new CpfTextWatcher(binding.edtCPF));
         binding.edtValueC.addTextChangedListener(new MoneyTextWatcher(binding.edtValueC));
         binding.edtMoneyChangeC.addTextChangedListener(new MoneyTextWatcher(binding.edtMoneyChangeC));
+        binding.edtDate.addTextChangedListener(new DateTextWatcher(binding.edtDate));
         ConfirmFragment confirmFragment = new ConfirmFragment();
         Bundle bundle = new Bundle();
 

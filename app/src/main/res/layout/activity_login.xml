@@ -89,6 +89,7 @@
         android:layout_height="wrap_content"
         android:text="Login com Google"
         android:drawableStart="@drawable/ic_google"
+
         android:backgroundTint="@color/azul"
         android:textColor="@color/branca"
         android:paddingStart="16dp"
