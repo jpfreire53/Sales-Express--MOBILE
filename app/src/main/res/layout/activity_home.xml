@@ -8,8 +8,6 @@
 
     android:background="@drawable/bg_gradient"
 
-  
-
     tools:context=".views.activity.HomeActivity">
 
     <!-- Menu Button -->
@@ -87,11 +85,6 @@
         app:layout_constraintGuide_percent="0.1"
         app:layout_constraintStart_toStartOf="parent" />
 
-        android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
 
     <!-- Guideline for Button Positioning -->
     <androidx.constraintlayout.widget.Guideline
@@ -144,7 +137,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/btnImageMenu"
+        android:id="@+id/btnImageMenu2"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_margin="16dp"

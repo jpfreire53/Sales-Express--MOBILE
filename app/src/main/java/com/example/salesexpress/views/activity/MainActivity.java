@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
         }
 
-        binding.mainLayout.setOnTouchListener((view, motionEvent) -> {
+        binding.frameLayout.setOnTouchListener((view, motionEvent) -> {
             hideKeyboard(view);
             return false;
         });

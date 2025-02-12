@@ -11,11 +11,12 @@
         android:id="@+id/imageView2"
         android:layout_width="208dp"
         android:layout_height="71dp"
+        android:layout_marginTop="200dp"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/sales_express" />
 
     <EditText
@@ -26,8 +27,8 @@
         android:layout_marginTop="32dp"
         android:background="@drawable/bg_field"
         android:hint="Usuário"
-        android:textColor="@color/azul"
-        android:textColorHint="#074A82"
+        android:textColor="@color/branca"
+        android:textColorHint="@color/branca"
         android:padding="12dp"
         android:fontFamily="@font/montserrat_regular"
         android:maxLength="30"
@@ -44,8 +45,8 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_field"
         android:hint="Senha"
-        android:textColor="@color/azul"
-        android:textColorHint="#074A82"
+        android:textColor="@color/branca"
+        android:textColorHint="@color/branca"
         android:padding="12dp"
         android:fontFamily="@font/montserrat_regular"
         android:maxLength="20"
@@ -83,35 +84,6 @@
         app:layout_constraintTop_toBottomOf="@+id/edtPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <Button
-        android:id="@+id/btnGoogleLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login com Google"
-        android:drawableStart="@drawable/ic_google"
-
-        android:backgroundTint="@color/azul"
-        android:textColor="@color/branca"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:id="@+id/tvForgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Esqueceu a Senha?"
-        android:textColor="@color/azul"
-        android:textSize="15sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoogleLogin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
